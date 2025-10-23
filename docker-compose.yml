@@ -26,6 +26,6 @@ services:
     restart: unless-stopped
     network_mode: bridge
     labels:
-      - "com.docker.compose.project=docker-controller"
+      - "com.docker.compose.project=qbarr"
       - "description=Docker容器控制器"
 
