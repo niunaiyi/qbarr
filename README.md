@@ -154,7 +154,8 @@ curl http://localhost:8011/api/docker/containers?all=true
 - `PORT` - 应用端口（默认: 8011）
 - `NODE_ENV` - 运行环境（development/production）
 - `MONITORED_CONTAINERS` - 要监控的容器名称列表（默认: arr，监控所有 *arr 系列容器）
-- `MONITOR_ENABLED` - 是否启用文件夹监控（默认: false）
+- `MONITOR_PATH` - 监控的文件夹路径（容器内路径）
+- `EXCLUDE_FOLDER` - 排除计算的文件夹名称（默认: incomplete）
 - `START_THRESHOLD_GB` - 启动容器的文件夹大小阈值（GB）
 - `STOP_THRESHOLD_GB` - 停止容器的文件夹大小阈值（GB）
 

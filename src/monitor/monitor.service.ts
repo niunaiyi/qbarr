@@ -7,7 +7,6 @@ import * as path from 'path';
 @Injectable()
 export class MonitorService {
   private readonly logger = new Logger(MonitorService.name);
-  private isMonitorEnabled = false;
   private monitorPath = '';
   private excludeFolder = '';
   private startThresholdGB = 0;
@@ -22,9 +21,6 @@ export class MonitorService {
    * 初始化配置
    */
   private initConfig() {
-    // 是否启用监控
-    this.isMonitorEnabled = process.env.MONITOR_ENABLED === 'true';
-    
     // 监控路径
     this.monitorPath = process.env.MONITOR_PATH || '/downloads';
     
@@ -37,15 +33,11 @@ export class MonitorService {
     // 停止阈值（GB）
     this.stopThresholdGB = parseFloat(process.env.STOP_THRESHOLD_GB || '50');
 
-    if (this.isMonitorEnabled) {
-      this.logger.log('📊 文件夹监控已启用');
-      this.logger.log(`📁 监控路径: ${this.monitorPath}`);
-      this.logger.log(`🚫 排除文件夹: ${this.excludeFolder}`);
-      this.logger.log(`🟢 启动阈值: ${this.startThresholdGB} GB`);
-      this.logger.log(`🔴 停止阈值: ${this.stopThresholdGB} GB`);
-    } else {
-      this.logger.log('⏸️  文件夹监控未启用');
-    }
+    this.logger.log('📊 文件夹监控已启用');
+    this.logger.log(`📁 监控路径: ${this.monitorPath}`);
+    this.logger.log(`🚫 排除文件夹: ${this.excludeFolder}`);
+    this.logger.log(`🟢 启动阈值: ${this.startThresholdGB} GB`);
+    this.logger.log(`🔴 停止阈值: ${this.stopThresholdGB} GB`);
   }
 
   /**
@@ -53,10 +45,6 @@ export class MonitorService {
    */
   @Cron(CronExpression.EVERY_5_MINUTES)
   async checkFolderSize() {
-    if (!this.isMonitorEnabled) {
-      return;
-    }
-
     try {
       // 计算文件夹大小
       const sizeInGB = await this.calculateFolderSize();
@@ -237,7 +225,6 @@ export class MonitorService {
    */
   getStatus() {
     return {
-      enabled: this.isMonitorEnabled,
       monitorPath: this.monitorPath,
       excludeFolder: this.excludeFolder,
       startThresholdGB: this.startThresholdGB,

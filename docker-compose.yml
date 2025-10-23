@@ -19,7 +19,6 @@ services:
       # 也可以指定具体容器，如：MONITORED_CONTAINERS=radarr,sonarr,lidarr
       - MONITORED_CONTAINERS=radarr, sonarr, lidarr, readarr, prowlarr, whisparr
       # 文件夹监控配置
-      - MONITOR_ENABLED=true                    # 是否启用监控（true/false）
       - MONITOR_PATH=/downloads                 # 监控的路径
       - EXCLUDE_FOLDER=incomplete               # 排除的文件夹名称
       - START_THRESHOLD_GB=100                  # 启动容器的阈值（GB）
