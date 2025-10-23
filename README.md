@@ -110,20 +110,9 @@ npm run start:prod
 
 ### 容器管理
 
-- `GET /api/docker/containers` - 列出所有容器
-- `GET /api/docker/containers/:id` - 获取容器详情
+- `GET /api/docker/containers` - 列出所有容器（支持查询参数 `?all=true`）
 - `POST /api/docker/containers/:id/start` - 启动容器
 - `POST /api/docker/containers/:id/stop` - 停止容器
-- `POST /api/docker/containers/:id/restart` - 重启容器
-- `POST /api/docker/containers/:id/pause` - 暂停容器
-- `POST /api/docker/containers/:id/unpause` - 恢复容器
-- `DELETE /api/docker/containers/:id` - 删除容器
-
-### 其他
-
-- `GET /api/docker/images` - 列出所有镜像
-- `GET /api/docker/info` - 获取 Docker 信息
-- `GET /api/docker/health` - 健康检查
 
 ## 🎯 使用示例
 
