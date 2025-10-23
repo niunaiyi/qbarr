@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  docker-controller:
-    build: .
-    container_name: docker-controller
+  qbarr:
+    image: ghcr.io/niunaiyi/qbarr:latest
+    container_name: qbarr
     ports:
       - "8011:8011"
     volumes:
