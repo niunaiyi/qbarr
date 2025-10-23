@@ -14,9 +14,10 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=8011
-      # 只监控所有 *arr 系列容器（radarr, sonarr, lidarr, readarr, prowlarr, whisparr 等）
-      - MONITORED_CONTAINERS=arr
-      
+      # 监控所有 *arr 系列容器      
+      # - MONITORED_CONTAINERS=arr
+      # 也可以指定具体容器，如：MONITORED_CONTAINERS=radarr,sonarr,lidarr
+      - MONITORED_CONTAINERS=radarr, sonarr, lidarr, readarr, prowlarr, whisparr
       # 文件夹监控配置
       - MONITOR_ENABLED=true                    # 是否启用监控（true/false）
       - MONITOR_PATH=/downloads                 # 监控的路径
@@ -27,5 +28,5 @@ services:
     network_mode: bridge
     labels:
       - "com.docker.compose.project=qbarr"
-      - "description=Docker容器控制器"
+      - "description=arr container manager"
 
