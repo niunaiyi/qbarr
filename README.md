@@ -1,6 +1,8 @@
-# Docker 容器控制器
+# *arr 容器控制器
 
-🐳 通过 Web 界面控制宿主机 Docker 容器的启停管理工具
+🐳 根据qbittorren已下载文件大小,控制 *arr启动或停止,从而减少磁盘活动,达到保护磁盘的目的.
+当qbittorrent下载完成的文件大小超过指定大小,刚启动*arr,把文件从qbittorrent移动到指定的目录.
+当qbittorrent下载完成的文件大小低于指定大小,刚停止*arr,让qbittorrent继续下载.
 
 ## ✨ 功能特性
 
@@ -302,4 +304,5 @@ MIT License
 ---
 
 **注意**: 此工具提供了对宿主机 Docker 的完全控制权限，请在安全的环境中使用，并做好访问控制。
+
 
