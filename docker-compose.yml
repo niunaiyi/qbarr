@@ -24,13 +24,8 @@ services:
       - START_THRESHOLD_GB=100                  # 启动容器的阈值（GB）
       - STOP_THRESHOLD_GB=50                    # 停止容器的阈值（GB）
     restart: unless-stopped
-    networks:
-      - docker-controller-network
+    network_mode: bridge
     labels:
       - "com.docker.compose.project=docker-controller"
       - "description=Docker容器控制器"
-
-networks:
-  docker-controller-network:
-    driver: bridge
 
