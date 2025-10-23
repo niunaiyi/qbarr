@@ -40,29 +40,29 @@ make push-dockerhub DOCKER_USER=your-dockerhub-username
 docker login
 
 # 2. 构建镜像
-docker build -t docker-controller:1.0.0 .
+docker build -t qbarr:1.0.0 .
 
 # 3. 打标签
-docker tag docker-controller:1.0.0 your-username/docker-controller:1.0.0
-docker tag docker-controller:1.0.0 your-username/docker-controller:latest
+docker tag qbarr:1.0.0 your-username/qbarr:1.0.0
+docker tag qbarr:1.0.0 your-username/qbarr:latest
 
 # 4. 推送镜像
-docker push your-username/docker-controller:1.0.0
-docker push your-username/docker-controller:latest
+docker push your-username/qbarr:1.0.0
+docker push your-username/qbarr:latest
 ```
 
 ### 使用发布的镜像
 
 ```bash
 # 拉取镜像
-docker pull your-username/docker-controller:latest
+docker pull your-username/qbarr:latest
 
 # 运行容器
 docker run -d \
-  --name docker-controller \
+  --name qbarr \
   -p 8011:8011 \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  your-username/docker-controller:latest
+  your-username/qbarr:latest
 ```
 
 ### 设置为公开镜像
@@ -107,15 +107,15 @@ make push-ghcr GITHUB_USER=your-github-username
 echo "YOUR_GITHUB_TOKEN" | docker login ghcr.io -u your-github-username --password-stdin
 
 # 2. 构建镜像
-docker build -t docker-controller:1.0.0 .
+docker build -t qbarr:1.0.0 .
 
 # 3. 打标签
-docker tag docker-controller:1.0.0 ghcr.io/your-github-username/docker-controller:1.0.0
-docker tag docker-controller:1.0.0 ghcr.io/your-github-username/docker-controller:latest
+docker tag qbarr:1.0.0 ghcr.io/your-github-username/qbarr:1.0.0
+docker tag qbarr:1.0.0 ghcr.io/your-github-username/qbarr:latest
 
 # 4. 推送镜像
-docker push ghcr.io/your-github-username/docker-controller:1.0.0
-docker push ghcr.io/your-github-username/docker-controller:latest
+docker push ghcr.io/your-github-username/qbarr:1.0.0
+docker push ghcr.io/your-github-username/qbarr:latest
 ```
 
 ### 设置为公开镜像
@@ -129,11 +129,11 @@ docker push ghcr.io/your-github-username/docker-controller:latest
 
 ```bash
 # 公开镜像（无需登录）
-docker pull ghcr.io/your-github-username/docker-controller:latest
+docker pull ghcr.io/your-github-username/qbarr:latest
 
 # 私有镜像（需要登录）
 docker login ghcr.io
-docker pull ghcr.io/your-github-username/docker-controller:latest
+docker pull ghcr.io/your-github-username/qbarr:latest
 ```
 
 ---
@@ -159,17 +159,17 @@ docker login quay.io
 ./push-to-registry.sh quay.io your-quay-username
 
 # 3. 或手动推送
-docker build -t docker-controller:1.0.0 .
-docker tag docker-controller:1.0.0 quay.io/your-username/docker-controller:1.0.0
-docker tag docker-controller:1.0.0 quay.io/your-username/docker-controller:latest
-docker push quay.io/your-username/docker-controller:1.0.0
-docker push quay.io/your-username/docker-controller:latest
+docker build -t qbarr:1.0.0 .
+docker tag qbarr:1.0.0 quay.io/your-username/qbarr:1.0.0
+docker tag qbarr:1.0.0 quay.io/your-username/qbarr:latest
+docker push quay.io/your-username/qbarr:1.0.0
+docker push quay.io/your-username/qbarr:latest
 ```
 
 ### 使用发布的镜像
 
 ```bash
-docker pull quay.io/your-username/docker-controller:latest
+docker pull quay.io/your-username/qbarr:latest
 ```
 
 ---
@@ -184,8 +184,8 @@ docker pull quay.io/your-username/docker-controller:latest
 
 # 或手动操作
 docker login registry.example.com
-docker tag docker-controller:1.0.0 registry.example.com/your-username/docker-controller:1.0.0
-docker push registry.example.com/your-username/docker-controller:1.0.0
+docker tag qbarr:1.0.0 registry.example.com/your-username/qbarr:1.0.0
+docker push registry.example.com/your-username/qbarr:1.0.0
 ```
 
 ### 4.2 阿里云容器镜像服务
@@ -195,8 +195,8 @@ docker push registry.example.com/your-username/docker-controller:1.0.0
 docker login --username=your-aliyun-username registry.cn-hangzhou.aliyuncs.com
 
 # 打标签并推送
-docker tag docker-controller:1.0.0 registry.cn-hangzhou.aliyuncs.com/your-namespace/docker-controller:1.0.0
-docker push registry.cn-hangzhou.aliyuncs.com/your-namespace/docker-controller:1.0.0
+docker tag qbarr:1.0.0 registry.cn-hangzhou.aliyuncs.com/your-namespace/qbarr:1.0.0
+docker push registry.cn-hangzhou.aliyuncs.com/your-namespace/qbarr:1.0.0
 ```
 
 ### 4.3 腾讯云容器镜像服务
@@ -206,8 +206,8 @@ docker push registry.cn-hangzhou.aliyuncs.com/your-namespace/docker-controller:1
 docker login ccr.ccs.tencentyun.com --username=your-tencent-username
 
 # 打标签并推送
-docker tag docker-controller:1.0.0 ccr.ccs.tencentyun.com/your-namespace/docker-controller:1.0.0
-docker push ccr.ccs.tencentyun.com/your-namespace/docker-controller:1.0.0
+docker tag qbarr:1.0.0 ccr.ccs.tencentyun.com/your-namespace/qbarr:1.0.0
+docker push ccr.ccs.tencentyun.com/your-namespace/qbarr:1.0.0
 ```
 
 ---
@@ -229,7 +229,7 @@ on:
     types: [ published ]
 
 env:
-  IMAGE_NAME: docker-controller
+  IMAGE_NAME: qbarr
 
 jobs:
   push-to-registries:
@@ -305,7 +305,7 @@ stages:
   - push
 
 variables:
-  IMAGE_NAME: docker-controller
+  IMAGE_NAME: qbarr
   DOCKER_DRIVER: overlay2
 
 build:
@@ -345,10 +345,10 @@ push:
 
 ```bash
 # 推送多个标签
-docker push username/docker-controller:1.0.0    # 完整版本
-docker push username/docker-controller:1.0      # 次版本
-docker push username/docker-controller:1        # 主版本
-docker push username/docker-controller:latest   # 最新版本
+docker push username/qbarr:1.0.0    # 完整版本
+docker push username/qbarr:1.0      # 次版本
+docker push username/qbarr:1        # 主版本
+docker push username/qbarr:latest   # 最新版本
 ```
 
 ### 2. 多架构支持
@@ -362,7 +362,7 @@ docker buildx create --name mybuilder --use
 # 构建并推送多架构镜像
 docker buildx build \
   --platform linux/amd64,linux/arm64,linux/arm/v7 \
-  -t username/docker-controller:latest \
+  -t username/qbarr:latest \
   --push .
 ```
 
@@ -375,7 +375,7 @@ docker buildx build \
 export DOCKER_CONTENT_TRUST=1
 
 # 推送时自动签名
-docker push username/docker-controller:latest
+docker push username/qbarr:latest
 ```
 
 ### 4. 安全扫描
@@ -383,10 +383,10 @@ docker push username/docker-controller:latest
 ```bash
 # 使用 Trivy 扫描
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  aquasec/trivy image username/docker-controller:latest
+  aquasec/trivy image username/qbarr:latest
 
 # 使用 Docker Scout
-docker scout cves username/docker-controller:latest
+docker scout cves username/qbarr:latest
 ```
 
 ---
@@ -400,7 +400,7 @@ docker scout cves username/docker-controller:latest
 # 使用 Docker Hub API
 curl -X DELETE \
   -H "Authorization: JWT ${TOKEN}" \
-  https://hub.docker.com/v2/repositories/username/docker-controller/tags/1.0.0/
+  https://hub.docker.com/v2/repositories/username/qbarr/tags/1.0.0/
 ```
 
 **GitHub Container Registry:**

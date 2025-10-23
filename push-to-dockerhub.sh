@@ -5,7 +5,7 @@
 
 set -e
 
-IMAGE_NAME="docker-controller"
+IMAGE_NAME="qbarr"
 IMAGE_VERSION="1.0.0"
 
 # 从参数获取用户名，或使用默认值

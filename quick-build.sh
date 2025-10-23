@@ -5,10 +5,10 @@
 
 set -e
 
-IMAGE_NAME="docker-controller"
+IMAGE_NAME="qbarr"
 IMAGE_VERSION="${1:-1.0.0}"
 IMAGE_TAG="latest"
-OUTPUT_FILE="docker-controller-image.tar"
+OUTPUT_FILE="qbarr-image.tar"
 
 echo "构建 Docker 镜像..."
 docker build -t ${IMAGE_NAME}:${IMAGE_TAG} \

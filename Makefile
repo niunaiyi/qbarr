@@ -1,9 +1,9 @@
 .PHONY: build save load run stop clean help
 
-IMAGE_NAME=docker-controller
+IMAGE_NAME=qbarr
 IMAGE_TAG=latest
 IMAGE_VERSION=1.0.0
-TAR_FILE=docker-controller-image.tar
+TAR_FILE=qbarr-image.tar
 
 help:  ## 显示帮助信息
 	@echo "Docker Controller 构建工具"

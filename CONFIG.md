@@ -55,7 +55,7 @@ MONITORED_CONTAINERS=web-server,api-server,worker
 
 ```yaml
 services:
-  docker-controller:
+  qbarr:
     environment:
       - PORT=8011
       - NODE_ENV=production
@@ -76,7 +76,7 @@ MONITORED_CONTAINERS=radarr,sonarr,whisparr
 
 ```yaml
 services:
-  docker-controller:
+  qbarr:
     env_file:
       - .env
 ```
@@ -85,12 +85,12 @@ services:
 
 ```bash
 docker run -d \
-  --name docker-controller \
+  --name qbarr \
   -p 8011:8011 \
   -e PORT=8011 \
   -e MONITORED_CONTAINERS=radarr,sonarr,whisparr \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  docker-controller:latest
+  qbarr:latest
 ```
 
 ---
@@ -234,16 +234,16 @@ docker-compose up -d
 
 ```bash
 # 1. 停止并删除旧容器
-docker stop docker-controller
-docker rm docker-controller
+docker stop qbarr
+docker rm qbarr
 
 # 2. 用新配置启动
 docker run -d \
-  --name docker-controller \
+  --name qbarr \
   -p 8011:8011 \
   -e MONITORED_CONTAINERS=新的容器列表 \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  docker-controller:latest
+  qbarr:latest
 ```
 
 ---
@@ -254,10 +254,10 @@ docker run -d \
 
 ```bash
 # docker-compose
-docker-compose logs docker-controller | grep "监控的容器"
+docker-compose logs qbarr | grep "监控的容器"
 
 # docker
-docker logs docker-controller | grep "监控的容器"
+docker logs qbarr | grep "监控的容器"
 ```
 
 输出示例：
@@ -332,13 +332,13 @@ MONITORED_CONTAINERS=container1,container2,container3
 **解决**:
 ```bash
 # 1. 确认环境变量已设置
-docker exec docker-controller env | grep MONITORED
+docker exec qbarr env | grep MONITORED
 
 # 2. 重新创建容器（而不是重启）
 docker-compose up -d --force-recreate
 
 # 3. 查看日志确认
-docker-compose logs docker-controller
+docker-compose logs qbarr
 ```
 
 ---
@@ -382,7 +382,7 @@ docker-compose --env-file .env.prod up -d
 
 - 项目文档: [README.md](README.md)
 - 部署指南: [QUICK-DEPLOY.md](QUICK-DEPLOY.md)
-- 查看日志: `docker-compose logs -f docker-controller`
+- 查看日志: `docker-compose logs -f qbarr`
 
 ---
 

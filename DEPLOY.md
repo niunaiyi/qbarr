@@ -14,29 +14,29 @@ chmod +x build-image.sh
 ./build-image.sh
 ```
 
-这将生成 `docker-controller-image.tar` 或 `docker-controller-image.tar.gz` 文件。
+这将生成 `qbarr-image.tar` 或 `qbarr-image.tar.gz` 文件。
 
 ### 2. 传输镜像到目标服务器
 
 ```bash
 # 使用 scp 传输
-scp docker-controller-image.tar.gz user@target-server:/path/to/destination/
+scp qbarr-image.tar.gz user@target-server:/path/to/destination/
 
 # 或使用 rsync
-rsync -avz docker-controller-image.tar.gz user@target-server:/path/to/destination/
+rsync -avz qbarr-image.tar.gz user@target-server:/path/to/destination/
 ```
 
 ### 3. 在目标服务器上导入镜像
 
 ```bash
 # 如果是压缩文件，先解压
-gunzip docker-controller-image.tar.gz
+gunzip qbarr-image.tar.gz
 
 # 导入镜像
-docker load -i docker-controller-image.tar
+docker load -i qbarr-image.tar
 
 # 验证镜像已导入
-docker images | grep docker-controller
+docker images | grep qbarr
 ```
 
 ### 4. 运行容器
@@ -55,7 +55,7 @@ docker-compose up -d
 
 ```bash
 docker run -d \
-  --name docker-controller \
+  --name qbarr \
   --restart unless-stopped \
   -p 8011:8011 \
   -v /var/run/docker.sock:/var/run/docker.sock \
@@ -68,7 +68,7 @@ docker run -d \
   -e EXCLUDE_FOLDER=incomplete \
   -e START_THRESHOLD_GB=100 \
   -e STOP_THRESHOLD_GB=50 \
-  docker-controller:latest
+  qbarr:latest
 ```
 
 ---
@@ -97,12 +97,12 @@ docker-compose up -d --build
 docker login your-registry.com
 
 # 构建并打标签
-docker build -t your-registry.com/docker-controller:1.0.0 .
-docker build -t your-registry.com/docker-controller:latest .
+docker build -t your-registry.com/qbarr:1.0.0 .
+docker build -t your-registry.com/qbarr:latest .
 
 # 推送到 Registry
-docker push your-registry.com/docker-controller:1.0.0
-docker push your-registry.com/docker-controller:latest
+docker push your-registry.com/qbarr:1.0.0
+docker push your-registry.com/qbarr:latest
 ```
 
 ### 2. 在目标服务器拉取
@@ -112,7 +112,7 @@ docker push your-registry.com/docker-controller:latest
 docker login your-registry.com
 
 # 拉取镜像
-docker pull your-registry.com/docker-controller:latest
+docker pull your-registry.com/qbarr:latest
 
 # 运行容器
 docker-compose up -d
@@ -165,7 +165,7 @@ docker-compose up -d
 docker-compose ps
 
 # 进入容器
-docker-compose exec docker-controller sh
+docker-compose exec qbarr sh
 ```
 
 ---
@@ -174,13 +174,13 @@ docker-compose exec docker-controller sh
 
 ### 容器无法启动
 
-1. 检查日志：`docker-compose logs docker-controller`
+1. 检查日志：`docker-compose logs qbarr`
 2. 验证 Docker socket 权限：`ls -la /var/run/docker.sock`
 3. 确保端口未被占用：`netstat -tlnp | grep 8011`
 
 ### 无法控制宿主机容器
 
-1. 确认 Docker socket 已正确挂载：`docker inspect docker-controller | grep docker.sock`
+1. 确认 Docker socket 已正确挂载：`docker inspect qbarr | grep docker.sock`
 2. 检查容器是否有权限访问 Docker socket
 
 ### 文件夹监控不工作
@@ -207,10 +207,10 @@ docker-compose exec docker-controller sh
 docker-compose down
 
 # 删除镜像
-docker rmi docker-controller:latest
+docker rmi qbarr:latest
 
 # 删除网络（如果不再需要）
-docker network rm docker-controller-network
+docker network rm qbarr-network
 ```
 
 ---

@@ -1,5 +1,5 @@
 {
-  "name": "docker-controller",
+  "name": "qbarr",
   "version": "1.0.0",
   "description": "通过Web界面控制宿主机Docker容器的启停",
   "author": "",

@@ -67,17 +67,17 @@ docker-compose down
 
 1. **构建镜像**
 ```bash
-docker build -t docker-controller .
+docker build -t qbarr .
 ```
 
 2. **运行容器**
 ```bash
 docker run -d \
-  --name docker-controller \
+  --name qbarr \
   -p 8011:8011 \
   -e PORT=8011 \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  docker-controller
+  qbarr
 ```
 
 3. **访问应用**
@@ -251,7 +251,7 @@ Web 界面提供以下功能：
 **解决方案**:
 1. 确认 Docker 服务正在运行
 2. 检查 Docker socket 路径是否正确挂载
-3. 查看容器日志: `docker-compose logs docker-controller`
+3. 查看容器日志: `docker-compose logs qbarr`
 
 ### 权限问题
 
