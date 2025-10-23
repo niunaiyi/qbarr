@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker 容器控制器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+
+        .monitor-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .monitor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .monitor-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .monitor-status {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .monitor-status.enabled {
+            background: #10b981;
+            color: white;
+        }
+
+        .monitor-status.disabled {
+            background: #6b7280;
+            color: white;
+        }
+
+        .monitor-body {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .monitor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .monitor-label {
+            font-weight: 500;
+            color: #666;
+        }
+
+        .monitor-value {
+            font-weight: 600;
+            color: #333;
+            font-family: 'Courier New', monospace;
+        }
+
+        .monitor-thresholds {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 10px 0;
+        }
+
+        .threshold-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .threshold-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .threshold-start {
+            border-color: #10b981;
+        }
+
+        .threshold-stop {
+            border-color: #ef4444;
+        }
+
+        .threshold-icon {
+            font-size: 32px;
+        }
+
+        .threshold-content {
+            flex: 1;
+        }
+
+        .threshold-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .threshold-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .threshold-start .threshold-value {
+            color: #10b981;
+        }
+
+        .threshold-stop .threshold-value {
+            color: #ef4444;
+        }
+
+        .container-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .container-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .container-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .container-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .container-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.running {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-badge.exited {
+            background: #ef4444;
+            color: white;
+        }
+
+        .status-badge.paused {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .status-badge.created {
+            background: #6b7280;
+            color: white;
+        }
+
+        .container-info {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .container-info div {
+            margin-bottom: 5px;
+        }
+
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 18px;
+        }
+
+        .error {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .monitor-thresholds {
+                grid-template-columns: 1fr;
+            }
+
+            .threshold-item {
+                padding: 15px;
+            }
+
+            .threshold-value {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                <span class="logo">🐳</span>
+                Docker 容器控制器
+            </h1>
+            <p class="subtitle">监控所有 *arr 系列容器状态（Radarr, Sonarr, Lidarr, Prowlarr, Whisparr 等）</p>
+        </header>
+
+        <div id="message"></div>
+
+        <!-- 监控配置卡片 -->
+        <div class="monitor-card" id="monitorCard" style="display: none;">
+            <div class="monitor-header">
+                <span class="monitor-title">📊 文件夹监控配置</span>
+                <span class="monitor-status" id="monitorStatus"></span>
+            </div>
+            <div class="monitor-body">
+                <div class="monitor-item">
+                    <span class="monitor-label">📁 监控路径:</span>
+                    <span class="monitor-value" id="monitorPath">-</span>
+                </div>
+                <div class="monitor-item">
+                    <span class="monitor-label">🚫 排除文件夹:</span>
+                    <span class="monitor-value" id="excludeFolder">-</span>
+                </div>
+                <div class="monitor-thresholds">
+                    <div class="threshold-item threshold-start">
+                        <div class="threshold-icon">🟢</div>
+                        <div class="threshold-content">
+                            <div class="threshold-label">启动阈值</div>
+                            <div class="threshold-value" id="startThreshold">- GB</div>
+                        </div>
+                    </div>
+                    <div class="threshold-item threshold-stop">
+                        <div class="threshold-icon">🔴</div>
+                        <div class="threshold-content">
+                            <div class="threshold-label">停止阈值</div>
+                            <div class="threshold-value" id="stopThreshold">- GB</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="monitor-item">
+                    <span class="monitor-label">⚡ 上次操作:</span>
+                    <span class="monitor-value" id="lastAction">-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-grid" id="containers">
+            <div class="loading">⏳ 加载中...</div>
+        </div>
+    </div>
+
+    <script>
+        let autoRefreshInterval = null;
+
+        // 页面加载时自动刷新
+        window.addEventListener('load', () => {
+            loadContainers();
+            loadMonitorStatus();
+            // 每30秒自动刷新
+            autoRefreshInterval = setInterval(() => {
+                loadContainers();
+                loadMonitorStatus();
+            }, 30000);
+        });
+
+        function showMessage(message, type = 'success') {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="${type}">${message}</div>`;
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        async function loadMonitorStatus() {
+            try {
+                const response = await fetch('/api/monitor/status');
+                const data = await response.json();
+                
+                if (data.success && data.status.enabled) {
+                    const status = data.status;
+                    
+                    // 显示监控卡片
+                    document.getElementById('monitorCard').style.display = 'block';
+                    
+                    // 更新状态
+                    const statusBadge = document.getElementById('monitorStatus');
+                    statusBadge.textContent = '已启用';
+                    statusBadge.className = 'monitor-status enabled';
+                    
+                    // 更新配置信息
+                    document.getElementById('monitorPath').textContent = status.monitorPath;
+                    document.getElementById('excludeFolder').textContent = status.excludeFolder;
+                    document.getElementById('startThreshold').textContent = status.startThresholdGB + ' GB';
+                    document.getElementById('stopThreshold').textContent = status.stopThresholdGB + ' GB';
+                    
+                    // 更新上次操作
+                    const lastAction = status.lastAction;
+                    let actionText = '';
+                    if (lastAction === 'start') {
+                        actionText = '🟢 已启动容器';
+                    } else if (lastAction === 'stop') {
+                        actionText = '🔴 已停止容器';
+                    } else {
+                        actionText = '⚪ 无操作';
+                    }
+                    document.getElementById('lastAction').textContent = actionText;
+                } else {
+                    // 隐藏监控卡片
+                    document.getElementById('monitorCard').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('加载监控状态失败:', error);
+                // 隐藏监控卡片
+                document.getElementById('monitorCard').style.display = 'none';
+            }
+        }
+
+        async function loadContainers() {
+            try {
+                const response = await fetch('/api/docker/containers?all=true');
+                const data = await response.json();
+                
+                const containersDiv = document.getElementById('containers');
+                
+                if (!data.success || data.containers.length === 0) {
+                    containersDiv.innerHTML = `
+                        <div class="empty-state">
+                            <div class="icon">📦</div>
+                            <h3>没有找到容器</h3>
+                            <p>当前宿主机上没有 Docker 容器</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                containersDiv.innerHTML = data.containers.map(container => {
+                    const stateClass = container.state.toLowerCase();
+                    const isRunning = container.state === 'running';
+                    const isPaused = container.state === 'paused';
+                    const isExited = container.state === 'exited';
+                    
+                    return `
+                        <div class="container-card">
+                            <div class="container-header">
+                                <div class="container-name">📦 ${container.name}</div>
+                                <div class="status-badge ${stateClass}">${container.state}</div>
+                            </div>
+                            <div class="container-info">
+                                <div><strong>ID:</strong> ${container.id}</div>
+                                <div><strong>镜像:</strong> ${container.image}</div>
+                                <div><strong>状态:</strong> ${container.status}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                document.getElementById('containers').innerHTML = `
+                    <div class="error">❌ 加载容器列表失败: ${error.message}</div>
+                `;
+            }
+        }
+
+    </script>
+</body>
+</html>
+

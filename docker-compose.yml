@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  docker-controller:
+    build: .
+    container_name: docker-controller
+    ports:
+      - "8011:8011"
+    volumes:
+      # 挂载宿主机的Docker socket，使容器能控制宿主机的Docker
+      - /var/run/docker.sock:/var/run/docker.sock
+      # 挂载下载目录用于监控文件夹大小（根据实际情况修改路径）
+      - /vol1/1000/downloads:/downloads:ro
+    environment:
+      - NODE_ENV=production
+      - PORT=8011
+      # 只监控所有 *arr 系列容器（radarr, sonarr, lidarr, readarr, prowlarr, whisparr 等）
+      - MONITORED_CONTAINERS=arr
+      
+      # 文件夹监控配置
+      - MONITOR_ENABLED=true                    # 是否启用监控（true/false）
+      - MONITOR_PATH=/downloads                 # 监控的路径
+      - EXCLUDE_FOLDER=incomplete               # 排除的文件夹名称
+      - START_THRESHOLD_GB=100                  # 启动容器的阈值（GB）
+      - STOP_THRESHOLD_GB=50                    # 停止容器的阈值（GB）
+    restart: unless-stopped
+    networks:
+      - docker-controller-network
+    labels:
+      - "com.docker.compose.project=docker-controller"
+      - "description=Docker容器控制器"
+
+networks:
+  docker-controller-network:
+    driver: bridge
+
